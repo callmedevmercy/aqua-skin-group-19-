@@ -117,6 +117,12 @@
                 <span>Subtotal:</span>
                 <span id="cart-subtotal">$0.00</span>
             </div>
+            <button
+                onclick="clearCart()"
+                class="w-full mb-4 py-3 border border-theme-brown text-theme-brown font-bold uppercase tracking-wider rounded-xl hover:bg-theme-brown hover:text-theme-cream transition"
+>                   Clear Cart
+            </button>
+
             <button class="w-full py-4 bg-theme-brown text-theme-cream font-bold uppercase tracking-wider rounded-xl hover:opacity-90 transition">
                 Checkout Now
             </button>
@@ -143,7 +149,7 @@
             </div>
 
             <div class="relative h-[350px] md:h-[500px] rounded-[3rem] overflow-hidden shadow-2xl block animate-float-slower order-2 mt-8 md:mt-0">
-                <img src="/images/skincare model.jpg" alt="Skincare Aesthetic Model" class="w-full h-full object-cover">
+                <img src="https://res.cloudinary.com/djyajhlmr/image/upload/v1768093338/Summer_Skincare_for_Dry_Sensitive_Skin_No_Breakouts_or_Flaking_vsvtyr.jpg" alt="Skincare Aesthetic Model" class="w-full h-full object-cover">
                 <div class="absolute inset-0 bg-gradient-to-t from-theme-brown/20 to-transparent mix-blend-overlay"></div>
             </div>
             
@@ -197,7 +203,7 @@
                 </div>
                 <div class="relative md:translate-y-12 md:order-2 order-1 animate-float-slower">
                     <div class="aspect-[3/4] rounded-[4rem] overflow-hidden shadow-xl">
-                        <img src="./images/enecta-cannabis-extracts-80wCkpt-IKE-unsplash.jpg" alt="Dropper applying serum" class="w-full h-full object-cover">
+                        <img src="https://res.cloudinary.com/djyajhlmr/image/upload/v1768154737/download_c79nar.jpg" alt="Dropper applying serum" class="w-full h-full object-cover">
                     </div>
                 </div>
             </div>
@@ -272,125 +278,191 @@
 
 
     <script>
-        // 1. Product Data (More items for the full shop feel)
-        const products = [
-            { id: 1, name: "Hydro-Boost Face Serum", price: 45.00, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop", description: "Intense hyaluronic hydration." },
-            { id: 2, name: "Barrier Repair Moisturizer", price: 38.50, image: "./images/moisturezer.jpg", description: "Daily strengthening cream." },
-            { id: 3, name: "Glow Defense Sunscreen SPF 50", price: 32.00, image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600&auto=format&fit=crop", description: "Invisible dewy protection." },
-            { id: 4, name: "Gentle Milk Cleanser", price: 28.00, image: "./images/milk serum.jpg", description: "Non-stripping daily wash." },
-            { id: 5, name: "Rosewater Hydrating Mist", price: 22.00, image: "./images/mist.jpg", description: "Instant refresh spray." },
-            { id: 6, name: "Vitamin C Brightening Serum", price: 55.00, image:"./images/orange cream.jpg", description: "For radiant, even tone." },
-            { id: 7, name: "Squalane Facial Oil", price: 48.00, image: "./images/moisturizer.jpg", description: "Locks in moisture." },
-            { id: 8, name: "Peptide Eye Cream", price: 40.00, image: "https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=600&auto=format&fit=crop", description: "Firms delicate eye area." }
-        ];
+    // 1. Product Data (UNCHANGED)
+    const products = [
+        { id: 1, name: "Hydro-Boost Face Serum", price: 45.00, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop", description: "Intense hyaluronic hydration." },
+        { id: 2, name: "Barrier Repair Moisturizer", price: 38.50, image: "./images/moisturezer.jpg", description: "Daily strengthening cream." },
+        { id: 3, name: "Glow Defense Sunscreen SPF 50", price: 32.00, image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600&auto=format&fit=crop", description: "Invisible dewy protection." },
+        { id: 4, name: "Gentle Milk Cleanser", price: 28.00, image: "./images/milk serum.jpg", description: "Non-stripping daily wash." },
+        { id: 5, name: "Rosewater Hydrating Mist", price: 22.00, image: "./images/mist.jpg", description: "Instant refresh spray." },
+        { id: 6, name: "Vitamin C Brightening Serum", price: 55.00, image:"./images/orange cream.jpg", description: "For radiant, even tone." },
+        { id: 7, name: "Squalane Facial Oil", price: 48.00, image: "./images/moisturizer.jpg", description: "Locks in moisture." },
+        { id: 8, name: "Peptide Eye Cream", price: 40.00, image: "https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=600&auto=format&fit=crop", description: "Firms delicate eye area." }
+    ];
 
-        // 2. State Variables
-        let cart = [];
+    // 2. State Variables
+    let cart = []; // FIXED: cart now stores { product + quantity }
 
-        // 3. DOM Elements
-        const productGrid = document.getElementById('product-grid');
-        const cartBtn = document.getElementById('cart-btn');
-        const closeCartBtn = document.getElementById('close-cart-btn');
-        const cartDrawer = document.getElementById('cart-drawer');
-        const cartOverlay = document.getElementById('cart-overlay');
-        const cartItemsContainer = document.getElementById('cart-items-container');
-        const cartSubtotalEl = document.getElementById('cart-subtotal');
-        const cartCountEl = document.getElementById('cart-count');
+    // 3. DOM Elements (UNCHANGED)
+    const productGrid = document.getElementById('product-grid');
+    const cartBtn = document.getElementById('cart-btn');
+    const closeCartBtn = document.getElementById('close-cart-btn');
+    const cartDrawer = document.getElementById('cart-drawer');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const cartItemsContainer = document.getElementById('cart-items-container');
+    const cartSubtotalEl = document.getElementById('cart-subtotal');
+    const cartCountEl = document.getElementById('cart-count');
 
-        // 4. Functions
+    // --------------------------------------------------
+    // 4. HELPER: Quantity selector for product cards (ADDED)
+    function getQuantitySelect(productId) {
+        return `
+            <div class="flex items-center justify-center gap-2 mt-3">
+                <label class="text-xs font-medium">Qty</label>
+                <select id="qty-${productId}" class="border rounded-md px-2 py-1 text-sm">
+                    ${Array.from({ length: 18 }, (_, i) => `
+                        <option value="${i + 1}">${i + 1}</option>
+                    `).join('')}
+                </select>
+            </div>
+        `;
+    }
 
-        // --- Render Products with Quick-Add Button ---
-        function renderProducts() {
-            productGrid.innerHTML = products.map(product => `
-                <div class="group bg-white/80 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden relative flex flex-col">
-                    <div class="relative aspect-square overflow-hidden bg-gray-100">
-                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
-                        <button onclick="addToCart(${product.id})" class="absolute bottom-3 right-3 bg-white p-3 rounded-full shadow-md text-theme-brown hover:bg-theme-brown hover:text-theme-cream transition-colors z-20 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 duration-300 cursor-pointer">
-                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="p-5 text-center flex-grow flex flex-col justify-between">
-                        <div>
-                             <h3 class="font-serif text-lg font-bold mb-1 leading-tight">${product.name}</h3>
-                             <p class="text-xs opacity-70 mb-3">${product.description}</p>
+    // --------------------------------------------------
+    // 5. Render Products (FIXED: quantity + button placement)
+    function renderProducts() {
+        productGrid.innerHTML = products.map(product => `
+            <div class="group bg-white/80 rounded-2xl shadow-sm overflow-hidden flex flex-col">
+                <div class="relative aspect-square overflow-hidden">
+                    <img src="${product.image}" class="w-full h-full object-cover group-hover:scale-110 transition">
+                </div>
+
+                <div class="p-5 text-center flex flex-col gap-2">
+                    <h3 class="font-serif font-bold">${product.name}</h3>
+                    <p class="text-xs opacity-70">${product.description}</p>
+                    <span class="font-bold">$${product.price.toFixed(2)}</span>
+
+                    <!-- ADDED: Quantity selector -->
+                    ${getQuantitySelect(product.id)}
+
+                    <!-- FIXED: Add to Cart button -->
+                    <button
+                        onclick="addToCart(${product.id})"
+                        class="mt-3 py-2 bg-theme-brown text-theme-cream rounded-lg font-bold"
+                    >
+                        Add to Cart
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // --------------------------------------------------
+    // 6. Add to Cart (FIXED: quantity-aware, no auto-open)
+    window.addToCart = function(productId) {
+        const qty = parseInt(document.getElementById(`qty-${productId}`).value);
+        const product = products.find(p => p.id === productId);
+        const existing = cart.find(item => item.id === productId);
+
+        if (existing) {
+            existing.quantity = Math.min(existing.quantity + qty, 18); // ADDED: cap at 18
+        } else {
+            cart.push({ ...product, quantity: qty }); // FIXED: store quantity
+        }
+
+        updateCartUI();
+        animateCartIcon(); // ADDED: feedback instead of opening cart
+    };
+
+    // --------------------------------------------------
+    // 7. Cart Quantity Controls (ADDED)
+    window.changeCartQuantity = function(index, delta) {
+        cart[index].quantity += delta;
+
+        if (cart[index].quantity <= 0) {
+            cart.splice(index, 1);
+        }
+        if (cart[index]?.quantity > 18) {
+            cart[index].quantity = 18;
+        }
+
+        updateCartUI();
+    };
+
+    // --------------------------------------------------
+    // 8. Clear Cart (ADDED)
+    function clearCart() {
+        cart.length = 0;
+        updateCartUI();
+        // Show a warning popup
+        const confirmed = confirm("Are you sure you want to clear your cart? All items will be removed.");
+        if (!confirmed) return; // user clicked "Cancel"
+
+        cart.length = 0; // actually clear the cart
+        updateCartUI();
+    }
+
+    // --------------------------------------------------
+    // 9. Update Cart UI (FIXED: quantity + subtotal + badge)
+    function updateCartUI() {
+        // FIXED: badge now shows total quantity
+        const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+        cartCountEl.textContent = totalQty;
+        cartCountEl.classList.toggle('opacity-0', totalQty === 0);
+
+        // Cart content
+        if (cart.length === 0) {
+            cartItemsContainer.innerHTML =
+                '<p class="text-center text-gray-500 py-8">Your bag is empty.</p>';
+        } else {
+            cartItemsContainer.innerHTML = cart.map((item, index) => `
+                <div class="flex items-center gap-4 border-b py-4">
+                    <img src="${item.image}" class="w-14 h-14 rounded-lg object-cover">
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm">${item.name}</h4>
+                        <p class="text-sm">$${(item.price * item.quantity).toFixed(2)}</p>
+
+                        <!-- ADDED: Quantity stepper -->
+                        <div class="flex items-center gap-2 mt-2">
+                            <button onclick="changeCartQuantity(${index}, -1)" class="px-2 border">−</button>
+                            <span class="font-bold">${item.quantity}</span>
+                            <button onclick="changeCartQuantity(${index}, 1)" class="px-2 border">+</button>
                         </div>
-                        <span class="font-bold text-theme-brown block mt-2">$${product.price.toFixed(2)}</span>
                     </div>
                 </div>
             `).join('');
         }
 
-        // --- Add Item to Cart ---
-        window.addToCart = function(productId) {
-            const productToAdd = products.find(p => p.id === productId);
-            cart.push(productToAdd);
-            updateCartUI();
-            openCart(); // Slide out drawer automatically
-        }
+        // FIXED: subtotal uses quantity
+        const subtotal = cart.reduce(
+            (total, item) => total + item.price * item.quantity,
+            0
+        );
+        cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+    }
 
-         // --- Remove specific instance from cart ---
-        window.removeInstanceFromCart = function(index) {
-             cart.splice(index, 1);
-             updateCartUI();
-        }
+    // --------------------------------------------------
+    // 10. Cart icon animation (ADDED)
+    function animateCartIcon() {
+        cartBtn.classList.remove('cart-animate');
+        void cartBtn.offsetWidth;
+        cartBtn.classList.add('cart-animate');
+    }
 
+    // --------------------------------------------------
+    // 11. Drawer logic (UNCHANGED)
+    function openCart() {
+        cartDrawer.classList.remove('translate-x-full');
+        cartOverlay.classList.remove('hidden');
+        setTimeout(() => cartOverlay.classList.remove('opacity-0'), 10);
+        document.body.classList.add('cart-open');
+    }
 
-        // --- Update Cart Drawer UI ---
-        function updateCartUI() {
-            // Update Badge Count
-            cartCountEl.textContent = cart.length;
-            cartCountEl.classList.toggle('opacity-0', cart.length === 0);
+    function closeCart() {
+        cartDrawer.classList.add('translate-x-full');
+        cartOverlay.classList.add('opacity-0');
+        setTimeout(() => cartOverlay.classList.add('hidden'), 300);
+        document.body.classList.remove('cart-open');
+    }
 
-            // Update Drawer Content
-            if (cart.length === 0) {
-                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 py-8 h-full flex items-center justify-center">Your bag is empty.</p>';
-            } else {
-                cartItemsContainer.innerHTML = cart.map((item, index) => `
-                    <div class="flex items-center space-x-4 animate-pulse-once py-4 border-b border-gray-100 last:border-0">
-                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
-                        <div class="flex-1">
-                            <h4 class="font-serif font-bold text-sm line-clamp-1">${item.name}</h4>
-                            <p class="text-sm font-bold text-theme-brown/80">$${item.price.toFixed(2)}</p>
-                        </div>
-                        <button onclick="removeInstanceFromCart(${index})" class="p-2 text-gray-400 hover:text-red-500 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 000-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
-                            </svg>
-                        </button>
-                    </div>
-                `).join('');
-            }
+    // Event Listeners (UNCHANGED)
+    cartBtn.addEventListener('click', openCart);
+    closeCartBtn.addEventListener('click', closeCart);
+    cartOverlay.addEventListener('click', closeCart);
 
-            // Update Subtotal
-            const subtotal = cart.reduce((total, item) => total + item.price, 0);
-            cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-        }
+    // Init
+    renderProducts();
+</script>
 
-        // --- Drawer Animation Logic ---
-        function openCart() {
-            cartDrawer.classList.remove('translate-x-full');
-            cartOverlay.classList.remove('hidden');
-            setTimeout(() => { cartOverlay.classList.remove('opacity-0'); }, 10);
-            document.body.classList.add('cart-open'); // Lock body scroll
-        }
-
-        function closeCart() {
-            cartDrawer.classList.add('translate-x-full');
-            cartOverlay.classList.add('opacity-0');
-            setTimeout(() => { cartOverlay.classList.add('hidden'); }, 300);
-            document.body.classList.remove('cart-open');
-        }
-
-        // 5. Event Listeners
-        cartBtn.addEventListener('click', openCart);
-        closeCartBtn.addEventListener('click', closeCart);
-        cartOverlay.addEventListener('click', closeCart);
-
-        // 6. Initialize
-        renderProducts();
-
-    </script>
 </body>
 </html>
