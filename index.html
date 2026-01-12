@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aqua Skin | Organic Luxury Skincare</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'theme-brown': '#43302e',
+                        'theme-cream': '#fff1b5',
+                        'theme-blue': '#c1dbe8',
+                    },
+                    fontFamily: {
+                        sans: ['Montserrat', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    backgroundImage: {
+                        'theme-gradient': 'linear-gradient(to bottom right, #fff1b5, #c1dbe8)',
+                    },
+                     // Animation for the misty elements in About section
+                     animation: {
+                        'float-slow': 'float 6s ease-in-out infinite',
+                        'float-slower': 'float 8s ease-in-out infinite reverse',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(to bottom right, #fff1b5, #c1dbe8);
+            color: #43302e; /* Setting default text color to theme brown */
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        /* Glassmorphism effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        /* Glass card styling */
+        .glass-card {
+             background: rgba(255, 255, 255, 0.6);
+             backdrop-filter: blur(10px);
+             border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        /* Hide scrollbar when cart is open */
+        body.cart-open { overflow: hidden; }
+        /* Smooth transition for the cart drawer */
+        #cart-drawer { transition: transform 0.3s ease-in-out; }
+        /* Misty Orbs for About Section */
+        .mist-orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased relative">
+
+    <nav class="fixed w-full z-50 glass px-6 py-4 flex justify-between items-center">
+        <a href="#home" class="font-serif text-2xl font-bold tracking-wide">Aqua Skin.</a>
+        
+        <div class="hidden md:flex space-x-8 font-medium text-sm uppercase tracking-wider">
+            <a href="#home" class="hover:opacity-70 transition">Home</a>
+            <a href="#shop" class="hover:opacity-70 transition">Shop</a>
+            <a href="#about" class="hover:opacity-70 transition">About</a>
+            <a href="#reviews" class="hover:opacity-70 transition">Reviews</a>
+            <a href="#contact" class="hover:opacity-70 transition">Contact</a>
+        </div>
+
+        <button id="cart-btn" class="relative p-2 hover:bg-white/50 rounded-full transition">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+            </svg>
+            <span id="cart-count" class="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-theme-cream bg-theme-brown rounded-full transform translate-x-1/4 -translate-y-1/4 opacity-0 transition-opacity">0</span>
+        </button>
+    </nav>
+
+    <div id="cart-overlay" class="fixed inset-0 bg-theme-brown/50 z-[60] hidden opacity-0 transition-opacity duration-300"></div>
+    
+    <div id="cart-drawer" class="fixed top-0 right-0 h-full w-full md:w-[400px] bg-white z-[70] shadow-2xl transform translate-x-full flex flex-col">
+        <div class="p-6 flex justify-between items-center border-b border-gray-100">
+            <h2 class="font-serif text-xl font-bold">Your Glow Bag</h2>
+            <button id="close-cart-btn" class="p-2 hover:bg-gray-100 rounded-full transition">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div id="cart-items-container" class="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50">
+            <p class="text-center text-gray-500 py-8">Your bag is empty.</p>
+        </div>
+
+        <div class="p-6 border-t border-gray-100 bg-white">
+            <div class="flex justify-between items-center mb-4 font-bold text-lg">
+                <span>Subtotal:</span>
+                <span id="cart-subtotal">$0.00</span>
+            </div>
+            <button class="w-full py-4 bg-theme-brown text-theme-cream font-bold uppercase tracking-wider rounded-xl hover:opacity-90 transition">
+                Checkout Now
+            </button>
+        </div>
+    </div>
+
+
+   <section id="home" class="min-h-screen pt-24 flex items-center px-6 md:px-12 lg:px-24 relative">
+        <div class="container mx-auto grid md:grid-cols-2 gap-8 md:gap-12 items-center z-10">
+            
+            <div class="space-y-6 text-center md:text-left animate-float-slow order-1">
+                <span class="uppercase tracking-[0.2em] text-sm font-semibold">Pure Hydration</span>
+                <h1 class="font-serif text-5xl md:text-7xl font-bold leading-tight">
+                    Unlock Your <br> Natural Glow.
+                </h1>
+                <p class="text-lg md:text-xl opacity-80 max-w-md mx-auto md:mx-0">
+                    Organic, aesthetic skincare designed to hydrate and rejuvenate your skin barrier.
+                </p>
+                <div class="pt-4">
+                    <a href="#shop" class="inline-block px-8 py-4 bg-theme-brown text-theme-cream font-bold uppercase tracking-wider rounded-full hover:shadow-lg hover:-translate-y-1 transition-all">
+                        Shop Collection
+                    </a>
+                </div>
+            </div>
+
+            <div class="relative h-[350px] md:h-[500px] rounded-[3rem] overflow-hidden shadow-2xl block animate-float-slower order-2 mt-8 md:mt-0">
+                <img src="/images/skincare model.jpg" alt="Skincare Aesthetic Model" class="w-full h-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-theme-brown/20 to-transparent mix-blend-overlay"></div>
+            </div>
+            
+        </div>
+    </section>
+
+    <section id="shop" class="py-24 px-6 md:px-12 bg-white/30 backdrop-blur-sm">
+        <div class="container mx-auto">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="font-serif text-4xl font-bold mb-4">The Collection</h2>
+                <p class="opacity-80">Hydration-focused essentials for dewy, protected skin.</p>
+            </div>
+
+            <div id="product-grid" class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+               </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-24 relative overflow-hidden">
+        <div class="mist-orb bg-theme-blue w-[600px] h-[600px] top-[10%] left-[-10%] animate-pulse"></div>
+        <div class="mist-orb bg-theme-cream w-[700px] h-[700px] bottom-[10%] right-[-10%] animate-pulse" style="animation-delay: 2s;"></div>
+
+        <div class="container mx-auto px-6 md:px-12 relative z-10">
+             <div class="text-center max-w-2xl mx-auto mb-16">
+                <h2 class="font-serif text-4xl font-bold mb-4">The Misty Glow Philosophy</h2>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 items-center mb-24">
+                <div class="relative md:-translate-y-12 animate-float-slow">
+                    <div class="aspect-[3/4] rounded-[4rem] overflow-hidden shadow-xl">
+                        <img src="https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop" alt="Serum bottle" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                <div class="glass-card p-8 md:p-12 rounded-3xl">
+                    <h3 class="font-serif text-2xl font-bold mb-4">More Than Skin Deep.</h3>
+                    <p class="text-lg leading-relaxed opacity-80">
+                        We wanted to strip skincare back to the essentials: hydration and barrier support. Our serums mimic the skin's natural structure, delivering potent botanicals in a dewy suspension.
+                    </p>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                 <div class="glass-card p-8 md:p-12 rounded-3xl md:order-1 order-2">
+                    <h3 class="font-serif text-2xl font-bold mb-4">Health & Body Positivity.</h3>
+                    <p class="text-lg leading-relaxed opacity-80 mb-4">
+                        Caring for your skin isn't vanity; it's vitality. We champion daily SPF and antioxidants to reduce health risks.
+                    </p>
+                    <p class="text-lg leading-relaxed opacity-80">
+                        We don't believe in "fixing" flaws. We believe in nurturing what you have. True beauty lies in the glow that comes from treated, hydrated skin.
+                    </p>
+                </div>
+                <div class="relative md:translate-y-12 md:order-2 order-1 animate-float-slower">
+                    <div class="aspect-[3/4] rounded-[4rem] overflow-hidden shadow-xl">
+                        <img src="./images/enecta-cannabis-extracts-80wCkpt-IKE-unsplash.jpg" alt="Dropper applying serum" class="w-full h-full object-cover">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+     <section id="reviews" class="py-24 px-6 md:px-12 bg-white/30 backdrop-blur-sm">
+        <div class="container mx-auto">
+            <h2 class="font-serif text-4xl font-bold text-center mb-16">Glowing Reviews</h2>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="glass-card p-8 rounded-2xl relative">
+                    <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-theme-brown text-theme-cream rounded-full flex items-center justify-center font-bold mr-3">S</div>
+                        <div><h4 class="font-bold">Sarah L.</h4><div class="text-yellow-500 text-sm">★★★★★</div></div>
+                    </div>
+                    <p class="opacity-80">"The Hydro-Boost Serum is a game changer. My skin literally drinks it up. It feels so plump!"</p>
+                </div>
+                 <div class="glass-card p-8 rounded-2xl relative mt-8 md:mt-0">
+                     <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-theme-blue text-theme-brown rounded-full flex items-center justify-center font-bold mr-3">M</div>
+                        <div><h4 class="font-bold">Michelle K.</h4><div class="text-yellow-500 text-sm">★★★★★</div></div>
+                    </div>
+                    <p class="opacity-80">"Finally a sunscreen that doesn't leave a white cast! It glows perfectly under makeup."</p>
+                </div>
+                 <div class="glass-card p-8 rounded-2xl relative mt-8 md:mt-0">
+                     <div class="flex items-center mb-4">
+                        <div class="w-10 h-10 bg-theme-cream text-theme-brown rounded-full flex items-center justify-center font-bold mr-3">J</div>
+                        <div><h4 class="font-bold">Jessica R.</h4><div class="text-yellow-500 text-sm">★★★★★</div></div>
+                    </div>
+                    <p class="opacity-80">"The texture of the moisturizer is incredible. Rich but sinks in immediately. Love the packaging too."</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <section id="contact" class="py-24 px-6 md:px-12 relative">
+        <div class="mist-orb bg-theme-blue w-[400px] h-[400px] bottom-[10%] left-[-5%] animate-pulse"></div>
+        <div class="container mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
+            <div>
+                <h2 class="font-serif text-4xl font-bold mb-6">Get In Touch</h2>
+                 <p class="text-lg opacity-80 mb-8">
+                        Have a question about your skin type or an order? Drop us a line.
+                </p>
+                 <div class="space-y-4 opacity-90">
+                    <p class="font-bold">hello@aquaskin.com</p>
+                    <p>Lagos, Nigeria</p>
+                </div>
+            </div>
+            <div class="glass-card p-8 md:p-12 rounded-[3rem] shadow-lg">
+                <form class="space-y-6">
+                    <div>
+                        <input type="text" class="w-full p-4 bg-white/70 rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-brown" placeholder="Your Name">
+                    </div>
+                    <div>
+                        <input type="email" class="w-full p-4 bg-white/70 rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-brown" placeholder="Your Email">
+                    </div>
+                    <div>
+                        <textarea rows="4" class="w-full p-4 bg-white/70 rounded-xl focus:outline-none focus:ring-2 focus:ring-theme-brown resize-none" placeholder="Message"></textarea>
+                    </div>
+                    <button type="button" class="w-full py-4 bg-theme-brown text-theme-cream font-bold uppercase tracking-wider rounded-full hover:shadow-lg transition-all">
+                        Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="py-8 text-center text-sm opacity-60 bg-white/40 relative z-20">
+        <p>© 2025 Aqua Skin. Organic Skincare project.</p>
+    </footer>
+
+
+    <script>
+        // 1. Product Data (More items for the full shop feel)
+        const products = [
+            { id: 1, name: "Hydro-Boost Face Serum", price: 45.00, image: "https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=600&auto=format&fit=crop", description: "Intense hyaluronic hydration." },
+            { id: 2, name: "Barrier Repair Moisturizer", price: 38.50, image: "./images/moisturezer.jpg", description: "Daily strengthening cream." },
+            { id: 3, name: "Glow Defense Sunscreen SPF 50", price: 32.00, image: "https://images.unsplash.com/photo-1556228578-0d85b1a4d571?q=80&w=600&auto=format&fit=crop", description: "Invisible dewy protection." },
+            { id: 4, name: "Gentle Milk Cleanser", price: 28.00, image: "./images/milk serum.jpg", description: "Non-stripping daily wash." },
+            { id: 5, name: "Rosewater Hydrating Mist", price: 22.00, image: "./images/mist.jpg", description: "Instant refresh spray." },
+            { id: 6, name: "Vitamin C Brightening Serum", price: 55.00, image:"./images/orange cream.jpg", description: "For radiant, even tone." },
+            { id: 7, name: "Squalane Facial Oil", price: 48.00, image: "./images/moisturizer.jpg", description: "Locks in moisture." },
+            { id: 8, name: "Peptide Eye Cream", price: 40.00, image: "https://images.unsplash.com/photo-1617897903246-719242758050?q=80&w=600&auto=format&fit=crop", description: "Firms delicate eye area." }
+        ];
+
+        // 2. State Variables
+        let cart = [];
+
+        // 3. DOM Elements
+        const productGrid = document.getElementById('product-grid');
+        const cartBtn = document.getElementById('cart-btn');
+        const closeCartBtn = document.getElementById('close-cart-btn');
+        const cartDrawer = document.getElementById('cart-drawer');
+        const cartOverlay = document.getElementById('cart-overlay');
+        const cartItemsContainer = document.getElementById('cart-items-container');
+        const cartSubtotalEl = document.getElementById('cart-subtotal');
+        const cartCountEl = document.getElementById('cart-count');
+
+        // 4. Functions
+
+        // --- Render Products with Quick-Add Button ---
+        function renderProducts() {
+            productGrid.innerHTML = products.map(product => `
+                <div class="group bg-white/80 backdrop-blur-md rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden relative flex flex-col">
+                    <div class="relative aspect-square overflow-hidden bg-gray-100">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <button onclick="addToCart(${product.id})" class="absolute bottom-3 right-3 bg-white p-3 rounded-full shadow-md text-theme-brown hover:bg-theme-brown hover:text-theme-cream transition-colors z-20 transform translate-y-2 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 duration-300 cursor-pointer">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="p-5 text-center flex-grow flex flex-col justify-between">
+                        <div>
+                             <h3 class="font-serif text-lg font-bold mb-1 leading-tight">${product.name}</h3>
+                             <p class="text-xs opacity-70 mb-3">${product.description}</p>
+                        </div>
+                        <span class="font-bold text-theme-brown block mt-2">$${product.price.toFixed(2)}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- Add Item to Cart ---
+        window.addToCart = function(productId) {
+            const productToAdd = products.find(p => p.id === productId);
+            cart.push(productToAdd);
+            updateCartUI();
+            openCart(); // Slide out drawer automatically
+        }
+
+         // --- Remove specific instance from cart ---
+        window.removeInstanceFromCart = function(index) {
+             cart.splice(index, 1);
+             updateCartUI();
+        }
+
+
+        // --- Update Cart Drawer UI ---
+        function updateCartUI() {
+            // Update Badge Count
+            cartCountEl.textContent = cart.length;
+            cartCountEl.classList.toggle('opacity-0', cart.length === 0);
+
+            // Update Drawer Content
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p class="text-center text-gray-500 py-8 h-full flex items-center justify-center">Your bag is empty.</p>';
+            } else {
+                cartItemsContainer.innerHTML = cart.map((item, index) => `
+                    <div class="flex items-center space-x-4 animate-pulse-once py-4 border-b border-gray-100 last:border-0">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-serif font-bold text-sm line-clamp-1">${item.name}</h4>
+                            <p class="text-sm font-bold text-theme-brown/80">$${item.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="removeInstanceFromCart(${index})" class="p-2 text-gray-400 hover:text-red-500 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 000-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                `).join('');
+            }
+
+            // Update Subtotal
+            const subtotal = cart.reduce((total, item) => total + item.price, 0);
+            cartSubtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+        }
+
+        // --- Drawer Animation Logic ---
+        function openCart() {
+            cartDrawer.classList.remove('translate-x-full');
+            cartOverlay.classList.remove('hidden');
+            setTimeout(() => { cartOverlay.classList.remove('opacity-0'); }, 10);
+            document.body.classList.add('cart-open'); // Lock body scroll
+        }
+
+        function closeCart() {
+            cartDrawer.classList.add('translate-x-full');
+            cartOverlay.classList.add('opacity-0');
+            setTimeout(() => { cartOverlay.classList.add('hidden'); }, 300);
+            document.body.classList.remove('cart-open');
+        }
+
+        // 5. Event Listeners
+        cartBtn.addEventListener('click', openCart);
+        closeCartBtn.addEventListener('click', closeCart);
+        cartOverlay.addEventListener('click', closeCart);
+
+        // 6. Initialize
+        renderProducts();
+
+    </script>
+</body>
+</html>
