@@ -123,9 +123,9 @@
 >                   Clear Cart
             </button>
 
-            <button class="w-full py-4 bg-theme-brown text-theme-cream font-bold uppercase tracking-wider rounded-xl hover:opacity-90 transition">
-                Checkout Now
-            </button>
+           <button onclick="checkout()" class="w-full py-4 bg-theme-brown text-theme-cream font-bold uppercase tracking-wider rounded-xl hover:opacity-90 transition">
+              Checkout Now
+           </button>
         </div>
     </div>
 
@@ -454,6 +454,31 @@
         setTimeout(() => cartOverlay.classList.add('hidden'), 300);
         document.body.classList.remove('cart-open');
     }
+    
+    // --------------------------------------------------
+// 12. Checkout Logic (ADDED)
+function checkout() {
+    // 1. Check if cart is empty
+    if (cart.length === 0) {
+        alert("Your cart is empty! Add some products first.");
+        return;
+    }
+
+    // 2. Calculate total for the message (Optional, but nice)
+    const subtotal = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+
+    // 3. Show success message
+    alert(`Thank you for your purchase! Your card has been charged $${subtotal.toFixed(2)}.`);
+
+    // 4. Clear the cart data
+    cart.length = 0;
+
+    // 5. Update the visual cart
+    updateCartUI();
+
+    // 6. Close the drawer
+    closeCart();
+}
 
     // Event Listeners (UNCHANGED)
     cartBtn.addEventListener('click', openCart);
