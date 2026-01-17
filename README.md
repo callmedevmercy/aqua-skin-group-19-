@@ -1,4 +1,5 @@
 Aqua Skin 🌊✨
+![Aqua Skin Preview](screenshot.png)
 Your ultimate destination for premium beauty and skincare products.
 
 🔴 Live Demo: [https://sage-froyo-cf6234.netlify.app/]
